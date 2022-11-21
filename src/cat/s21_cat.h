@@ -1,12 +1,11 @@
-#ifndef SRC_S21_cat_H
-#define SRC_S21_cat_H
+#ifndef SRC_CAT_S21_CAT_H_
+#define SRC_CAT_S21_CAT_H_
 
 #include <stdio.h>
 #include <getopt.h>
 #include <ctype.h>
 #include <unistd.h>
-struct s_flag
-{
+struct s_flag {
     int b;
     int e;
     int n;
@@ -15,9 +14,8 @@ struct s_flag
     int v;
 };
 
-void parsStr(int file_dict);
 void ParserFlag(int argc, char *argv[], struct s_flag *flags);
 void OpenFile(int argc, char *argv[], struct s_flag flags);
 void PrintCat(FILE *file, struct s_flag flags);
 
-#endif // SRC_S21_cat_H
+#endif  // SRC_CAT_S21_CAT_H_

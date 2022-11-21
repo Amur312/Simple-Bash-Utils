@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     if (!flag.e && !flag.f) {
       if (!*argv[optind])
         argv[optind] = ".";
-      strcat(patternE, argv[optind]); // Объединение строк.Cкопировать строку "argv[optind]" в patternE
+      strcat(patternE, argv[optind]);  // Объединение строк.Cкопировать строку "argv[optind]" в patternE
       optind += 1;
     }
     OpenFile(argc, argv, flag, patternE);
@@ -119,13 +119,11 @@ void f_flag(char *optarg, int *e_count, char *patternE, struct s_flags *flag) {
 
 void OpenFile(int argc, char *argv[], struct s_flags flag, char *patternE) {
   // optind количество «съеденных» аргументов
-  int files_count = argc - optind; // уменьшает количество аргументов на optind
+  int files_count = argc - optind;  // уменьшает количество аргументов на optind
 
   while (optind < argc) {
     FILE *file;
-    if ((file = fopen(argv[optind], "r")) !=
-        NULL) // eсли же файл не может быть открыт, возвращается NULL.
-    {
+    if ((file = fopen(argv[optind], "r")) != NULL) {
       RegexComp(argv, patternE, file, flag, files_count);
       fclose(file);
     } else if (!flag.s) {
@@ -137,12 +135,12 @@ void OpenFile(int argc, char *argv[], struct s_flags flag, char *patternE) {
 
 void RegexComp(char *argv[], char *patternE, FILE *file, struct s_flags flag,
                int files_count) {
-  regex_t regex; // сохронение скомпилированноого регулярного выражения.
-  char buff_str[BuffSize];      // Массив строк в файле
-  regmatch_t regmatch[1] = {0}; // Поиск строки
+  regex_t regex;  // сохронение скомпилированноого регулярного выражения.
+  char buff_str[BuffSize];       // Массив строк в файле
+  regmatch_t regmatch[1] = {0};  // Поиск строки
   size_t nmatch =
-      1; // это количество подстрок в строке , которые regexec()функция должна
-         // попытаться сопоставить с подвыражениями в preg
+      1;  // это количество подстрок в строке , которые regexec()функция должна
+          // попытаться сопоставить с подвыражениями в preg
   size_t file_line = 1;
   int status;
 
@@ -192,7 +190,7 @@ void RegexComp(char *argv[], char *patternE, FILE *file, struct s_flags flag,
     }
   }
   if (flag.c) {
-    if (files_count > 1 && !flag.h) 
+    if (files_count > 1 && !flag.h)
       printf("%s:", argv[optind]);
     if (flag.l && lines_count)
       printf("1\n");
@@ -201,7 +199,6 @@ void RegexComp(char *argv[], char *patternE, FILE *file, struct s_flags flag,
   }
   if (flag.l && lines_count) {
     printf("%s\n", argv[optind]);
-
   }
   regfree(&regex);
 }

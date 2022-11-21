@@ -3,24 +3,13 @@
 // argc -счетчик аргументов  *argv -указатель на 0 индекс каждого аргумента
 int main(int argc, char *argv[]) {
   struct s_flag flags = {0};
-  if (argc == 1) {
-    parsStr(STDIN_FILENO);
-  } else {
+  if (argc >= 2) {
     ParserFlag(argc, argv, &flags);
     OpenFile(argc, argv, flags);
+  } else {
+    printf("Please enter a filename\n");
   }
   return 0;
-}
-
-void parsStr(
-    int file_dict) {  // когда пользователь вводит просто саt без аргументов
-  char buff[4096];
-  int byte_read;
-  byte_read = read(file_dict, buff, 4096);  // read return error -1
-  while (byte_read > 0) {
-    printf("%.*s", byte_read, buff);
-    byte_read = read(file_dict, buff, 4096);
-  }
 }
 
 void ParserFlag(int argc, char *argv[], struct s_flag *flags) {
@@ -33,7 +22,7 @@ void ParserFlag(int argc, char *argv[], struct s_flag *flags) {
 
   while ((options = getopt_long(argc, argv, "benstvET", long_options,
                                 &command)) != -1) {
-    switch (options) { 
+    switch (options) {
     case 'b':
       flags->b = 1;
       break;
@@ -90,58 +79,47 @@ void OpenFile(int argc, char *argv[], struct s_flag flags) {
 void PrintCat(FILE *file, struct s_flag flags) {
   char ch = 0;
   int new_line = 1;
-  int number = 1;
-  char pr_ch = 0;
+  int line = 1;
+  int empty_lines = 0;
   while ((ch = fgetc(file)) != EOF) {
     if (flags.s) {
       if (ch == '\n') {
-        ++pr_ch;
-        if (pr_ch > 2) {
+        ++empty_lines;
+        if (empty_lines > 2) {
           continue;
         }
       } else {
-        pr_ch = 0;
+        empty_lines = 0;
       }
     }
-    if (flags.b) {
-      if (new_line) {
-        if (ch != '\n') {
-          printf("%6d\t", number++);
-          new_line = 0;
-        }
-      }
-      if (ch == '\n')
-        new_line = 1;
+    if (flags.n && new_line) {
+      printf("%6d\t", line);
+      ++line;
+      new_line = 0;
     }
-    if (flags.e) {
-      if (ch == '\n')
-        printf("%c", '$');
+    if (flags.b && new_line && ch != '\n') {
+      printf("%6d\t", line);
+      ++line;
+      new_line = 0;
     }
-    if (flags.n) {
-      if (new_line) {
-        printf("%6d\t", number++);
-        new_line = 0;
-      }
-      if (ch == '\n')
-        new_line = 1;
+    if (flags.e && ch == '\n') {
+      printf("$");
     }
-
-    if (flags.t) {
-      if (ch == '\t') {
-        printf("%c", '^');
-        ch = 'I';
-      }
+    if (flags.t && ch == '\t') {
+      printf("^");
+      ch = 'I';
     }
-    if (flags.v) {
-      if (!isprint(ch) && ch != 10 &&
-          ch != 9) {  // isprint() -проверяет, является ли символ печатаемым
-                     // (включая пробел)
+    if (flags.v && ch != '\n' && ch != '\t') {
+      if (ch >= 0 && ch <= 31) {
         printf("^");
-        if (ch == 127)
-          ch -= 64;
-        else
-          ch += 64;
+        ch += 64;
+      } else if (ch == 127) {
+        printf("^");
+        ch -= 64;
       }
+    }
+    if (ch == '\n') {
+      new_line = 1;
     }
     printf("%c", ch);
   }
