@@ -7,9 +7,9 @@ Implementation of of Bash text utilities: cat, grep. The programs are developed 
 ### Build
 ```
 cd src/cat
-make build
+make 
 cd ../grep
-make build
+make 
 ```
 
 ### cat usage
@@ -48,9 +48,9 @@ make build
 ### Сборка
 ```
 cd src/cat
-make build
+make
 cd ../grep
-make build
+make 
 ```
 
 ### Использование cat
